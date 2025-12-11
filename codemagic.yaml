@@ -21,7 +21,7 @@ workflows:
 
       - name: Setup Firebase Config (CRUCIAL)
         script: | 
-          cp "$CM_SECRETS/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json"
+          cp "$FIREBASE_JSON_PATH" "$CM_BUILD_DIR/android/app/google-services.json"
 
       - name: Flutter build APK
         script: |
@@ -30,6 +30,7 @@ workflows:
     artifacts:
 
       - build/app/outputs/flutter-apk/app-release.apk
+
 
 
 
