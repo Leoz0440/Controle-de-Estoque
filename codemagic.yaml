@@ -21,7 +21,6 @@ workflows:
 
       - name: Setup Firebase Config (CRUCIAL)
         script: | 
-          # Use a variável que deve ter o caminho ABSOLUTO (ex: /tmp/...)
           cp "$FIREBASE_JSON_PATH" "$CM_BUILD_DIR/android/app/google-services.json"
 
       - name: Flutter build APK
@@ -31,4 +30,5 @@ workflows:
     artifacts:
 
       - build/app/outputs/flutter-apk/app-release.apk
+
 
