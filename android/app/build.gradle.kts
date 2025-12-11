@@ -31,10 +31,10 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
-        freeCompilerArgs.addAll(listOf(
-            "-Xallow-incompatible-mpp",
+        freeCompilerArgs += listOf(
+            "-Xallow-incompatible-mpp", 
             "-Xsuppress-version-string"
-        ))
+        )
     }
 
     defaultConfig {
