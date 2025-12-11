@@ -23,11 +23,12 @@ workflows:
         script: | 
           # CORREÇÃO: Usamos a variável mágica CM_SECRETS mais o nome do arquivo.
           # Isso contorna o problema de a variável FIREBASE_JSON_PATH estar vazia.
-          cp "$CM_SECRETS/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json"
+          cp "$FIREBASE_JSON_PATH" "$CM_BUILD_DIR/android/app/google-services.json"
 
       - name: Flutter build APK
         script: |
           flutter build apk --release
 
     artifacts:
+
       - build/app/outputs/flutter-apk/app-release.apk
