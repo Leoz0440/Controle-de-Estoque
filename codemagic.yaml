@@ -8,12 +8,10 @@ workflows:
     environment:
       flutter: stable
       groups:
-        - firebase_secrets # O Codemagic injeta os segredos neste grupo,
-                          # e a variável CM_SECRETS aponta para a pasta.
-      # REMOÇÃO: Removido o bloco 'vars' para simplificar
-      
-    # REMOÇÃO: O bloco 'secrets' continua removido.
-
+        - firebase_secrets 
+    
+      vars:
+        FIREBASE_FILENAME: google-services.json
     scripts:
       - name: Set up Flutter
         script: |
@@ -21,7 +19,7 @@ workflows:
 
       - name: Setup Firebase Config (CRUCIAL)
         script: | 
-          cp "$FIREBASE_JSON_PATH" "$CM_BUILD_DIR/android/app/google-services.json"
+          cp "$CM_SECRETS/$FIREBASE_FILENAME" "$CM_BUILD_DIR/android/app/google-services.json"
 
       - name: Flutter build APK
         script: |
@@ -30,6 +28,7 @@ workflows:
     artifacts:
 
       - build/app/outputs/flutter-apk/app-release.apk
+
 
 
 
