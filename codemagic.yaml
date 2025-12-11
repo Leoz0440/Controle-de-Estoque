@@ -19,17 +19,25 @@ workflows:
 
       - name: Setup Firebase Config (CRUCIAL)
         script: | 
-          cp "$CM_SECRETS/$FIREBASE_FILENAME" "$CM_BUILD_DIR/android/app/google-services.json"
+          echo "Tentando copiar google-services.json..."
+          
+          # SOLUÇÃO 1: Tenta copiar da pasta de segredos (mais provável se for injetado)
+          # A opção -f força a cópia, e && permite encadear os comandos.
+          # A flag || true permite que o script Bash continue se a cópia falhar (para tentar a próxima).
+          cp -f "$CM_SECRETS/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json" || true
+          
+          # SOLUÇÃO 2: Tenta copiar da raiz do projeto (se o arquivo foi adicionado ao Git)
+          cp -f "$CM_BUILD_DIR/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json" || true
+          
+          # SOLUÇÃO 3: Tenta copiar da pasta android/ (onde ele deveria estar no repositório)
+          cp -f "$CM_BUILD_DIR/android/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json"
+
+          # Verifica se o arquivo final foi copiado antes de continuar
+          ls -la "$CM_BUILD_DIR/android/app/google-services.json"
 
       - name: Flutter build APK
         script: |
           flutter build apk --release
 
     artifacts:
-
       - build/app/outputs/flutter-apk/app-release.apk
-
-
-
-
-
