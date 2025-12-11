@@ -1,0 +1,32 @@
+appId: 1234567890abcdefghijklmnopqrstuvwxyz
+
+workflows:
+  android-release:
+    name: Android Release Build
+    instance_type: mac_mini_m2
+    
+    environment:
+      flutter: stable
+      groups:
+        - firebase_secrets
+
+    # A sintaxe sem hífen geralmente resolve o erro "extra fields not permitted"
+    secrets:
+      FIREBASE_JSON_PATH: google-services.json
+    
+    scripts:
+      - name: Set up Flutter
+        script: |
+          flutter packages get
+
+      - name: Setup Firebase Config (CRUCIAL)
+        script: | 
+          # Este comando copiará o arquivo secreto usando o caminho da variável
+          cp "$FIREBASE_JSON_PATH" "$CM_BUILD_DIR/android/app/google-services.json"
+
+      - name: Flutter build APK
+        script: |
+          flutter build apk --release
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
