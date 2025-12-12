@@ -38,6 +38,8 @@ workflows:
       - name: Flutter build APK
         script: |
           flutter build apk --release
+          ls -R build/app/outputs/
 
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
+
