@@ -11,25 +11,31 @@ workflows:
         - firebase_secrets 
       
     scripts:
-      - name: Clean Gradle and Get Packages (Novo Passo)
+      - name: Clean Packages and Get Dependencies
         script: |
-          flutter clean
-          rm -rf $CM_BUILD_DIR/android/.gradle
           flutter packages get
 
       - name: Setup Firebase Config (CRUCIAL)
         script: | 
           cp "$CM_SECRETS/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json" || true
           cp -f "$CM_BUILD_DIR/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json" || true
-          ls -la "$CM_BUILD_DIR/android/app/google-services.json" # Diagnóstico
+          ls -la "$CM_BUILD_DIR/android/app/google-services.json"
 
-      - name: Flutter build APK (Com Flag de Bypass)
+      - name: Build APK via Gradle Direto (ÚLTIMA TENTATIVA)
         script: |
-          flutter build apk --release --android-skip-build-dependency-validation
+          cd $CM_BUILD_DIR/android
+          
+          ./gradlew assembleRelease \
+            --info \
+            --stacktrace \
+            -x lint \
+            -Dorg.gradle.caching=false \
+            -Dorg.gradle.jvmargs='-Xmx2048m'
+
+          cd $CM_BUILD_DIR
           
           ls -R build/app/outputs/ # Repetir para ver o novo caminho
+          ls -R app/build/outputs/ # Caminho alternativo do Gradle
 
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
-
-
