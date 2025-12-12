@@ -21,10 +21,13 @@ workflows:
           cp -f "$CM_BUILD_DIR/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json" || true
           ls -la "$CM_BUILD_DIR/android/app/google-services.json"
 
+      - name: Set Gradle Wrapper Permissions
+        script: |
+          chmod +x $CM_BUILD_DIR/android/gradlew
+
       - name: Build APK via Gradle Direto (ÚLTIMA TENTATIVA)
         script: |
           cd $CM_BUILD_DIR/android
-          
           ./gradlew assembleRelease \
             --info \
             --stacktrace \
@@ -33,9 +36,9 @@ workflows:
             -Dorg.gradle.jvmargs='-Xmx2048m'
 
           cd $CM_BUILD_DIR
-          
-          ls -R build/app/outputs/ # Repetir para ver o novo caminho
-          ls -R app/build/outputs/ # Caminho alternativo do Gradle
+          ls -R build/app/outputs/
+          ls -R app/build/outputs/
 
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
+
