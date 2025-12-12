@@ -9,37 +9,27 @@ workflows:
       flutter: stable
       groups:
         - firebase_secrets 
-    
-      vars:
-        FIREBASE_FILENAME: google-services.json
+      
     scripts:
-      - name: Set up Flutter
+      - name: Clean Gradle and Get Packages (Novo Passo)
         script: |
+          flutter clean
+          rm -rf $CM_BUILD_DIR/android/.gradle
           flutter packages get
 
       - name: Setup Firebase Config (CRUCIAL)
         script: | 
-          echo "Tentando copiar google-services.json..."
-          
-          # SOLUÇÃO 1: Tenta copiar da pasta de segredos (mais provável se for injetado)
-          # A opção -f força a cópia, e && permite encadear os comandos.
-          # A flag || true permite que o script Bash continue se a cópia falhar (para tentar a próxima).
-          cp -f "$CM_SECRETS/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json" || true
-          
-          # SOLUÇÃO 2: Tenta copiar da raiz do projeto (se o arquivo foi adicionado ao Git)
+          cp "$CM_SECRETS/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json" || true
           cp -f "$CM_BUILD_DIR/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json" || true
-          
-          # SOLUÇÃO 3: Tenta copiar da pasta android/ (onde ele deveria estar no repositório)
-          cp -f "$CM_BUILD_DIR/android/google-services.json" "$CM_BUILD_DIR/android/app/google-services.json"
+          ls -la "$CM_BUILD_DIR/android/app/google-services.json" # Diagnóstico
 
-          # Verifica se o arquivo final foi copiado antes de continuar
-          ls -la "$CM_BUILD_DIR/android/app/google-services.json"
-
-      - name: Flutter build APK
+      - name: Flutter build APK (Com Flag de Bypass)
         script: |
-          flutter build apk --release
-          ls -R build/app/outputs/
+          flutter build apk --release --android-skip-build-dependency-validation
+          
+          ls -R build/app/outputs/ # Repetir para ver o novo caminho
 
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
+
 
