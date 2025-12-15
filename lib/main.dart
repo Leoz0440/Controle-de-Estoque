@@ -18,11 +18,22 @@ class MDFStockApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Controle de Estoque MDF',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.deepPurple,
+        ),
+        
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          // Adicione outros estilos de texto aqui
+        ),
       ),
-      home: const StockPage(),
+      
+      home: const TelaInicial(),
     );
   }
 }
